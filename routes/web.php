@@ -43,7 +43,7 @@ Route::get('/facebook/webhook', function (Request $request) use ($pageAccessToke
     return response()->json(['status' => 'success']);
 });
 
-Route::post('/facebook/comment-webhook', function (Request $request) use ($pageAccessToken, $dialogflowApiKey) {
+Route::get('/facebook/comment-webhook', function (Request $request) use ($pageAccessToken, $dialogflowApiKey) {
     $data = $request->all();
 
     if (!empty($data['entry'][0]['changes'])) {

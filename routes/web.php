@@ -10,8 +10,21 @@ $pageAccessToken = env('FACEBOOK_PAGE_ACCESS_TOKEN', 'default_access_token');
 $dialogflowProjectId = env('DIALOGFLOW_PROJECT_ID', 'default_project_id');
 $dialogflowApiKey = env('DIALOGFLOW_API_KEY', 'default_api_key');
 
+Route::get('/facebook/webhook', function (Request $request) {
+    $verifyToken = 'BUM1bum2'; // اختار أي قيمة وسجلها في إعدادات فيسبوك
 
-Route::get('/facebook/webhook', function (Request $request) use ($pageAccessToken, $dialogflowApiKey) {
+    $mode = $request->query('hub_mode');
+    $token = $request->query('hub_verify_token');
+    $challenge = $request->query('hub_challenge');
+
+    if ($mode === 'subscribe' && $token === $verifyToken) {
+        return response($challenge, 200);
+    }
+
+    return response('Forbidden', 403);
+});
+
+Route::post('/facebook/webhook', function (Request $request) use ($pageAccessToken, $dialogflowApiKey) {
     $data = $request->all();
 
     if (!empty($data['entry'][0]['messaging'])) {
